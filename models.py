@@ -1,15 +1,13 @@
-from pydantic import Field,BaseModel
+from pydantic import BaseModel, Field
+from datetime import date
 
-class StudentCreate(BaseModel):
-    code: str = Field(..., description="Código del estudiante")
-    full_name: str = Field(..., description="Nombre completo del estudiante")
-    emails: str = Field(..., description="Correo electrónico del estudiante")
+class Enrollment(BaseModel):
+    id: int  
+    student_id: int
+    course_id: int
+    enrollment_date: date
 
-
-class Student(StudentCreate):
-    student_id: int = Field(..., description="ID del estudiante (autogenerado)")
-
-    class Config:
-        from_attributes = True
-
-
+class EnrollmentCreate(BaseModel):
+    student_id: int
+    course_id: int
+    enrollment_date: date
