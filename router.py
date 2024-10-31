@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models import Course, CourseCreate  # Asegúrate de que estos modelos existan
+from models import Course, CourseCreate  
 from database import get_connection 
 from typing import List
 import mysql.connector
@@ -41,8 +41,7 @@ def insert_course(course: CourseCreate):
         cursor.execute(query, (course.name, course.start_date, course.end_date, course.teacher_id))
         conn.commit()  
 
-        # El ID se genera automáticamente, no es necesario añadirlo manualmente
-        created_course = Course(id=cursor.lastrowid, **course.dict())
+        created_course = Course(course_id=cursor.lastrowid, **course.dict())
 
         return created_course  
     
@@ -79,7 +78,7 @@ def bulk_insert_courses(courses: List[CourseCreate]):
         # Para el bulk insert, el último ID generado será el último ID insertado.
         last_id = cursor.lastrowid
         created_courses = [
-            Course(id=last_id - len(courses) + i + 1, **course.dict())  
+            Course(course_id=last_id - len(courses) + i + 1, **course.dict())  
             for i, course in enumerate(courses)
         ]
 

@@ -12,4 +12,4 @@ class CourseCreate(CourseBase):
     pass
 
 class Course(CourseBase):
-    id: int 
+    course_id: int 
