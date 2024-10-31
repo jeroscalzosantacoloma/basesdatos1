@@ -1,10 +1,12 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-class TeacherCreate(BaseModel):
-    name: str = Field(..., description="Nombre del docente")
-    email: str = Field(..., description="Correo electrónico del docente")
+class SubjectBase(BaseModel):
+    name: str
+    course_id: int
 
-class Teacher(TeacherCreate):
-    teacher_id: int = Field(..., description="ID del docente (autogenerado)")
+class SubjectCreate(SubjectBase):
+    pass
 
+class Subject(SubjectBase):
+    id: int
 

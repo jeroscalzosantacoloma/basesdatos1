@@ -1,31 +1,31 @@
 from fastapi import APIRouter, HTTPException
-from models import Teacher, TeacherCreate
+from models import Subject, SubjectCreate  # Asegúrate de que estos modelos existan
 from database import get_connection 
 from typing import List
 import mysql.connector
 
 router = APIRouter()
 
-@router.get("/teachers/", response_model=List[Teacher])
-def list_teachers():
+@router.get("/subjects/", response_model=List[Subject])
+def list_subjects():
     conn = get_connection()
     if conn is None:
         raise HTTPException(status_code=500, detail="Database connection failed.")
         
     cursor = conn.cursor(dictionary=True)
     try:
-        query = "SELECT * FROM teachers"
+        query = "SELECT * FROM subjects"
         cursor.execute(query)
-        teachers = cursor.fetchall()
-        return [Teacher(**teacher) for teacher in teachers]
+        subjects = cursor.fetchall()
+        return [Subject(**subject) for subject in subjects]
     except mysql.connector.Error as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         cursor.close()
         conn.close()
 
-@router.post("/teachers/", response_model=Teacher)
-def insert_teacher(teacher: TeacherCreate):
+@router.post("/subjects/", response_model=Subject)
+def insert_subject(subject: SubjectCreate):
     conn = get_connection()  
     if conn is None:
         raise HTTPException(status_code=500, detail="Database connection failed.")
@@ -34,16 +34,17 @@ def insert_teacher(teacher: TeacherCreate):
 
     try:
         query = """
-        INSERT INTO teachers (name, email)
+        INSERT INTO subjects (name, course_id)
         VALUES (%s, %s)
         """
         
-        cursor.execute(query, (teacher.name, teacher.email))
+        cursor.execute(query, (subject.name, subject.course_id))
         conn.commit()  
 
-        created_teacher = Teacher(teacher_id=cursor.lastrowid, **teacher.dict())
+        # El ID se genera automáticamente en la base de datos
+        created_subject = Subject(id=cursor.lastrowid, **subject.dict())
 
-        return created_teacher  
+        return created_subject  
     
     except mysql.connector.Error as e:
         conn.rollback()  
@@ -56,8 +57,9 @@ def insert_teacher(teacher: TeacherCreate):
     finally:
         cursor.close()  
         conn.close()
-@router.post("/teachers/bulk/", response_model=List[Teacher])
-def bulk_insert_teachers(teachers: List[TeacherCreate]):
+
+@router.post("/subjects/bulk/", response_model=List[Subject])
+def bulk_insert_subjects(subjects: List[SubjectCreate]):
     conn = get_connection()  
     if conn is None:
         raise HTTPException(status_code=500, detail="Database connection failed.")
@@ -65,21 +67,23 @@ def bulk_insert_teachers(teachers: List[TeacherCreate]):
     cursor = conn.cursor(dictionary=True)  
     try:
         query = """
-        INSERT INTO teachers (name, email)
+        INSERT INTO subjects (name, course_id)
         VALUES (%s, %s)
         """
         
-        values = [(teacher.name, teacher.email) for teacher in teachers]
+        values = [(subject.name, subject.course_id) for subject in subjects]
 
         cursor.executemany(query, values)  
         conn.commit()  
 
-        created_teachers = [
-            Teacher(teacher_id=cursor.lastrowid + i + 1, **teacher.dict())  
-            for i, teacher in enumerate(teachers)
+        # Para el bulk insert, el último ID generado será el último ID insertado.
+        last_id = cursor.lastrowid
+        created_subjects = [
+            Subject(id=last_id - len(subjects) + i + 1, **subject.dict())  
+            for i, subject in enumerate(subjects)
         ]
 
-        return created_teachers  
+        return created_subjects  
     
     except mysql.connector.Error as e:
         conn.rollback()  
@@ -91,5 +95,4 @@ def bulk_insert_teachers(teachers: List[TeacherCreate]):
     
     finally:
         cursor.close()  
-        conn.close()  
-
+        conn.close()
