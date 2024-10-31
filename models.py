@@ -1,13 +1,11 @@
-from pydantic import BaseModel, Field
-from datetime import date
+from pydantic import BaseModel
 
-class Enrollment(BaseModel):
-    id: int  
-    student_id: int
-    course_id: int
-    enrollment_date: date
+class StudentCreate(BaseModel):
+    code: str
+    full_name: str
+    emails: str
 
-class EnrollmentCreate(BaseModel):
-    student_id: int
-    course_id: int
-    enrollment_date: date
+class Student(StudentCreate):
+    student_id: int  # Este campo será llenado al crear el estudiante
+
+
