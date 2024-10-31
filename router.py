@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
-import mysql.connector
-from typing import List
-from models import Student, StudentCreate, Enrollment, EnrollmentCreate  
+from models import Student, StudentCreate, Enrollment, EnrollmentCreate, Subject, SubjectCreate
 from database import get_connection
+from typing import List
+import mysql.connector
 
 router = APIRouter()
 
@@ -90,6 +90,7 @@ def get_students():
         cursor.close()
         conn.close()
 
+# Manejo de inscripciones
 @router.post("/enrollments/", response_model=Enrollment)
 def insert_enrollment(enrollment: EnrollmentCreate):
     conn = get_connection()

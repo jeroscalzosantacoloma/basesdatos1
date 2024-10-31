@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from datetime import date
+
 
 class StudentCreate(BaseModel):
     code: str
@@ -6,20 +8,25 @@ class StudentCreate(BaseModel):
     emails: str
 
 class Student(StudentCreate):
-    student_id: int  
+    student_id: int
 
+class SubjectBase(BaseModel):
+    name: str
+    description: str
 
-from pydantic import BaseModel, Field
-from datetime import date
+class SubjectCreate(SubjectBase):
+    pass
 
-class Enrollment(BaseModel):
-    id: int 
+class Subject(SubjectBase):
+    subject_id: int
+
+class EnrollmentCreate(BaseModel):
     student_id: int
     course_id: int
     enrollment_date: date
 
-
-class EnrollmentCreate(BaseModel):
+class Enrollment(BaseModel):
+    id: int 
     student_id: int
     course_id: int
     enrollment_date: date
