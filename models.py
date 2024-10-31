@@ -8,5 +8,5 @@ class SubjectCreate(SubjectBase):
     pass
 
 class Subject(SubjectBase):
-    id: int
+    subject_id: int
 

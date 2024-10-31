@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models import Subject, SubjectCreate  # Asegúrate de que estos modelos existan
+from models import Subject, SubjectCreate 
 from database import get_connection 
 from typing import List
 import mysql.connector
@@ -41,7 +41,6 @@ def insert_subject(subject: SubjectCreate):
         cursor.execute(query, (subject.name, subject.course_id))
         conn.commit()  
 
-        # El ID se genera automáticamente en la base de datos
         created_subject = Subject(id=cursor.lastrowid, **subject.dict())
 
         return created_subject  
@@ -76,10 +75,9 @@ def bulk_insert_subjects(subjects: List[SubjectCreate]):
         cursor.executemany(query, values)  
         conn.commit()  
 
-        # Para el bulk insert, el último ID generado será el último ID insertado.
         last_id = cursor.lastrowid
         created_subjects = [
-            Subject(id=last_id - len(subjects) + i + 1, **subject.dict())  
+            Subject(subject_id=last_id - len(subjects) + i + 1, **subject.dict())  
             for i, subject in enumerate(subjects)
         ]
 
