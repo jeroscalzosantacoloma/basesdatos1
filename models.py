@@ -6,6 +6,6 @@ class StudentCreate(BaseModel):
     emails: str
 
 class Student(StudentCreate):
-    student_id: int  # Este campo será llenado al crear el estudiante
+    student_id: int  
 
 
