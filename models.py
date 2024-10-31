@@ -1,15 +1,10 @@
-from pydantic import Field,BaseModel
+from pydantic import BaseModel, Field
 
-class StudentCreate(BaseModel):
-    code: str = Field(..., description="Código del estudiante")
-    full_name: str = Field(..., description="Nombre completo del estudiante")
-    emails: str = Field(..., description="Correo electrónico del estudiante")
+class TeacherCreate(BaseModel):
+    name: str = Field(..., description="Nombre del docente")
+    email: str = Field(..., description="Correo electrónico del docente")
 
-
-class Student(StudentCreate):
-    id: int = Field(..., description="ID del estudiante (autogenerado)")
-
-    class Config:
-        from_attributes = True
+class Teacher(TeacherCreate):
+    teacher_id: int = Field(..., description="ID del docente (autogenerado)")
 
 
