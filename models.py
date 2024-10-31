@@ -7,7 +7,7 @@ class StudentCreate(BaseModel):
 
 
 class Student(StudentCreate):
-    id: int = Field(..., description="ID del estudiante (autogenerado)")
+    student_id: int = Field(..., description="ID del estudiante (autogenerado)")
 
     class Config:
         from_attributes = True

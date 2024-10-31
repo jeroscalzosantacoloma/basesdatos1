@@ -19,7 +19,7 @@ def list_students():
         students = cursor.fetchall()
         return [Student(**student) for student in students]
     except mysql.connector.Error as e:
-        # Manejo de error específico para la base de datos
+       
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         cursor.close()
@@ -47,7 +47,7 @@ def bulk_insert_students(students: List[StudentCreate]):
 
        
         created_students = [
-            Student(id=cursor.lastrowid + i + 1, **student.dict())  
+            Student(student_id=cursor.lastrowid + i + 1, **student.dict())  
             for i, student in enumerate(students)
         ]
 
@@ -83,7 +83,7 @@ def insert_student(student: StudentCreate):
         cursor.execute(query, (student.code, student.full_name, student.emails))
         conn.commit()  
 
-        created_student = Student(id=cursor.lastrowid, **student.dict())
+        created_student = Student(student_id=cursor.lastrowid, **student.dict())
 
         return created_student  
     
